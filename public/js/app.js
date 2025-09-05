@@ -267,22 +267,44 @@ class StoryVerseApp {
     }
 
     async playIntroduction() {
-        if (!this.currentStoryData?.intro_audio) return;
-        
         this.stopAllAudio();
-        const audio = new Audio(`/api/story/files/${this.currentStoryData.intro_audio.split('/').pop()}`);
-        this.audioElements.push(audio);
-        await audio.play();
+        
+        if (this.currentStoryData?.intro_audio) {
+            try {
+                const audio = new Audio(`/api/story/files/${this.currentStoryData.intro_audio.split('/').pop()}`);
+                this.audioElements.push(audio);
+                await audio.play();
+                return;
+            } catch (error) {
+                console.warn('Audio file failed, using fallback TTS:', error);
+            }
+        }
+        
+        // Fallback to browser text-to-speech
+        const introText = `Welcome to ${this.currentStoryData.title}. Let me tell you an incredible story that will take you on an unforgettable journey.`;
+        this.speakText(introText);
     }
 
     async playChapterAudio(chapterIndex) {
-        const audioPath = this.currentStoryData.narration_audio?.[chapterIndex];
-        if (!audioPath) return;
-        
         this.stopAllAudio();
-        const audio = new Audio(`/api/story/files/${audioPath.split('/').pop()}`);
-        this.audioElements.push(audio);
-        await audio.play();
+        
+        const audioPath = this.currentStoryData.narration_audio?.[chapterIndex];
+        if (audioPath) {
+            try {
+                const audio = new Audio(`/api/story/files/${audioPath.split('/').pop()}`);
+                this.audioElements.push(audio);
+                await audio.play();
+                return;
+            } catch (error) {
+                console.warn('Audio file failed, using fallback TTS:', error);
+            }
+        }
+        
+        // Fallback to browser text-to-speech
+        const chapter = this.currentStoryData.chapters[chapterIndex];
+        if (chapter?.narrative_text) {
+            this.speakText(chapter.narrative_text);
+        }
     }
 
     async autoPlayStory() {
@@ -291,24 +313,30 @@ class StoryVerseApp {
         
         try {
             // Play introduction
-            if (this.currentStoryData.intro_audio) {
-                await this.playIntroduction();
-                await this.sleep(1000); // Pause between sections
-            }
+            await this.playIntroduction();
+            await this.sleep(1000); // Pause between sections
             
             // Play each chapter
             for (let i = 0; i < this.currentStoryData.chapters.length; i++) {
-                if (this.currentStoryData.narration_audio?.[i]) {
-                    await this.playChapterAudio(i);
-                    await this.sleep(1500); // Pause between chapters
-                }
+                await this.playChapterAudio(i);
+                await this.sleep(1500); // Pause between chapters
             }
             
             // Play outro
             if (this.currentStoryData.outro_audio) {
-                const audio = new Audio(`/api/story/files/${this.currentStoryData.outro_audio.split('/').pop()}`);
-                this.audioElements.push(audio);
-                await audio.play();
+                try {
+                    const audio = new Audio(`/api/story/files/${this.currentStoryData.outro_audio.split('/').pop()}`);
+                    this.audioElements.push(audio);
+                    await audio.play();
+                } catch (error) {
+                    // Fallback outro
+                    const outroText = `And so ends our tale of ${this.currentStoryData.title}. Thank you for joining us on this incredible journey.`;
+                    await this.speakText(outroText);
+                }
+            } else {
+                // Fallback outro
+                const outroText = `And so ends our tale of ${this.currentStoryData.title}. Thank you for joining us on this incredible journey.`;
+                await this.speakText(outroText);
             }
             
         } finally {
@@ -328,6 +356,33 @@ class StoryVerseApp {
             audio.currentTime = 0;
         });
         this.audioElements = [];
+        
+        // Stop any speech synthesis
+        if (window.speechSynthesis) {
+            window.speechSynthesis.cancel();
+        }
+    }
+
+    speakText(text) {
+        if (!window.speechSynthesis) {
+            console.warn('Speech synthesis not supported');
+            return Promise.resolve();
+        }
+
+        return new Promise((resolve) => {
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.rate = 0.9;
+            utterance.pitch = 1.0;
+            utterance.volume = 1.0;
+            
+            utterance.onend = () => resolve();
+            utterance.onerror = () => {
+                console.warn('Speech synthesis error');
+                resolve();
+            };
+            
+            window.speechSynthesis.speak(utterance);
+        });
     }
 
     sleep(ms) {
