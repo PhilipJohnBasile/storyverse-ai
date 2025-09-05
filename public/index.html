@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StoryVerse AI - Interactive Visual Story Creator</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="app">
+        <header class="header">
+            <div class="container">
+                <h1 class="logo">🍌 StoryVerse AI</h1>
+                <p class="tagline">Where Stories Come to Life with AI Magic</p>
+            </div>
+        </header>
+
+        <main class="main">
+            <div class="container">
+                <!-- Story Creation Form -->
+                <div id="creation-form" class="creation-form">
+                    <div class="form-container">
+                        <h2>Create Your Story</h2>
+                        <p>Describe your story idea and watch it come to life with consistent characters, stunning visuals, and AI-generated narration!</p>
+                        
+                        <div class="input-group">
+                            <label for="story-prompt">Story Concept</label>
+                            <textarea 
+                                id="story-prompt" 
+                                placeholder="E.g., 'A detective cat solving mysteries in Tokyo' or 'Two robots discovering friendship on Mars'"
+                                rows="4"
+                            ></textarea>
+                        </div>
+                        
+                        <button id="generate-btn" class="generate-btn">
+                            ✨ Generate Story
+                        </button>
+                        
+                        <div class="examples">
+                            <h3>Try these examples:</h3>
+                            <div class="example-buttons">
+                                <button class="example-btn" data-prompt="A brave dragon learning to overcome their fear of heights while protecting a magical forest">🐲 Dragon's Journey</button>
+                                <button class="example-btn" data-prompt="A time-traveling librarian who discovers that books are portals to different worlds">📚 Time Librarian</button>
+                                <button class="example-btn" data-prompt="Two unlikely friends, a tech-savvy octopus and a clumsy robot, starting an underwater detective agency">🐙 Ocean Detectives</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Progress Section -->
+                <div id="progress-section" class="progress-section hidden">
+                    <div class="progress-container">
+                        <h2 id="progress-title">Creating Your Story...</h2>
+                        <div class="progress-bar">
+                            <div id="progress-fill" class="progress-fill"></div>
+                        </div>
+                        <p id="progress-text">Generating story outline...</p>
+                        
+                        <div class="progress-steps">
+                            <div class="step" id="step-outline">
+                                <div class="step-icon">📝</div>
+                                <div class="step-text">Story Outline</div>
+                            </div>
+                            <div class="step" id="step-visuals">
+                                <div class="step-icon">🎨</div>
+                                <div class="step-text">Character & Scenes</div>
+                            </div>
+                            <div class="step" id="step-audio">
+                                <div class="step-icon">🎵</div>
+                                <div class="step-text">AI Narration</div>
+                            </div>
+                            <div class="step" id="step-transitions">
+                                <div class="step-icon">🎬</div>
+                                <div class="step-text">Video Magic</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Story Display -->
+                <div id="story-display" class="story-display hidden">
+                    <div class="story-header">
+                        <h1 id="story-title">Your Story</h1>
+                        <button id="restart-btn" class="restart-btn">Create New Story</button>
+                    </div>
+                    
+                    <div class="story-controls">
+                        <button id="play-intro" class="control-btn">🎵 Play Introduction</button>
+                        <button id="auto-play" class="control-btn">▶️ Auto-Play Story</button>
+                    </div>
+                    
+                    <div id="characters-section" class="characters-section">
+                        <h3>Characters</h3>
+                        <div id="characters-grid" class="characters-grid"></div>
+                    </div>
+                    
+                    <div id="chapters-section" class="chapters-section">
+                        <h3>Story Chapters</h3>
+                        <div id="chapters-container" class="chapters-container"></div>
+                    </div>
+                    
+                    <div class="story-footer">
+                        <p>✨ Powered by Gemini Nano Banana, fal.ai, and ElevenLabs</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+</html>
