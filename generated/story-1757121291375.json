@@ -1,0 +1,47 @@
+{
+  "id": "1757121291375",
+  "data": {
+    "step1": {
+      "reader-feeling": "",
+      "book-conversation": "",
+      "personal-connection": "",
+      "genre": "mystery",
+      "genre-promise": "",
+      "theme": "",
+      "vision-board": ""
+    },
+    "step2": {
+      "brain-dump": "",
+      "what-if": "",
+      "what-if-outcomes": "",
+      "premise": ""
+    },
+    "step3": {
+      "main-character-name": "",
+      "character-goal": "",
+      "character-obstacle": "",
+      "character-flaw": "",
+      "character-backstory": "",
+      "character-vulnerability": ""
+    },
+    "step4": {
+      "world-rules": "",
+      "world-smell": "",
+      "world-sounds": "",
+      "world-textures": "",
+      "world-visuals": "",
+      "symbolic-setting": ""
+    },
+    "step5": {
+      "hook": "",
+      "turning-point-1": "",
+      "turning-point-2": "",
+      "turning-point-3": "",
+      "climax": "",
+      "resolution": ""
+    }
+  },
+  "supportingCharacters": [],
+  "timestamp": "2025-09-06T01:14:51.371Z",
+  "createdAt": "2025-09-06T01:14:51.375Z"
+}

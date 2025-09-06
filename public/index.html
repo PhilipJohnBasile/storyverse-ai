@@ -3,93 +3,377 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StoryVerse AI - Interactive Visual Story Creator</title>
+    <title>StoryVerse - Master Your Story in 5 Steps</title>
     <link rel="stylesheet" href="css/style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
 </head>
 <body>
     <div id="app">
         <header class="header">
             <div class="container">
-                <h1 class="logo">🍌 StoryVerse AI</h1>
-                <p class="tagline">Where Stories Come to Life with AI Magic</p>
+                <h1 class="logo">📚 StoryVerse</h1>
+                <p class="tagline">Master Your Story in 5 Essential Steps</p>
             </div>
         </header>
 
         <main class="main">
             <div class="container">
-                <!-- Story Creation Form -->
-                <div id="creation-form" class="creation-form">
-                    <div class="form-container">
-                        <h2>Create Your Story</h2>
-                        <p>Describe your story idea and watch it come to life with consistent characters, stunning visuals, and AI-generated narration!</p>
-                        
-                        <div class="input-group">
-                            <label for="story-prompt">Story Concept</label>
-                            <textarea 
-                                id="story-prompt" 
-                                placeholder="E.g., 'A detective cat solving mysteries in Tokyo' or 'Two robots discovering friendship on Mars'"
-                                rows="4"
-                            ></textarea>
-                        </div>
-                        
-                        <button id="generate-btn" class="generate-btn">
-                            ✨ Generate Story
-                        </button>
-                        
-                        <div class="examples">
-                            <h3>Try these examples:</h3>
-                            <div class="example-buttons">
-                                <button class="example-btn" data-prompt="A brave dragon learning to overcome their fear of heights while protecting a magical forest">🐲 Dragon's Journey</button>
-                                <button class="example-btn" data-prompt="A time-traveling librarian who discovers that books are portals to different worlds">📚 Time Librarian</button>
-                                <button class="example-btn" data-prompt="Two unlikely friends, a tech-savvy octopus and a clumsy robot, starting an underwater detective agency">🐙 Ocean Detectives</button>
-                            </div>
-                        </div>
+                <!-- Progress Indicator -->
+                <div class="progress-indicator">
+                    <div class="progress-fill"></div>
+                </div>
+                
+                <!-- Step Navigation -->
+                <div class="step-nav">
+                    <div class="nav-item active" data-step="1">
+                        <div class="nav-number">1</div>
+                        <div class="nav-text">Foundation</div>
+                    </div>
+                    <div class="nav-item" data-step="2">
+                        <div class="nav-number">2</div>
+                        <div class="nav-text">Discovery</div>
+                    </div>
+                    <div class="nav-item" data-step="3">
+                        <div class="nav-number">3</div>
+                        <div class="nav-text">Characters</div>
+                    </div>
+                    <div class="nav-item" data-step="4">
+                        <div class="nav-number">4</div>
+                        <div class="nav-text">World</div>
+                    </div>
+                    <div class="nav-item" data-step="5">
+                        <div class="nav-number">5</div>
+                        <div class="nav-text">Plot</div>
                     </div>
                 </div>
 
-                <!-- Progress Section -->
-                <div id="progress-section" class="progress-section hidden">
-                    <div class="progress-container">
-                        <h2 id="progress-title">Creating Your Story...</h2>
-                        <div class="progress-bar">
-                            <div id="progress-fill" class="progress-fill"></div>
-                        </div>
-                        <p id="progress-text">Generating story outline...</p>
-                        
-                        <div class="progress-steps">
-                            <div class="step" id="step-outline">
-                                <div class="step-icon">📝</div>
-                                <div class="step-text">Story Outline</div>
+                <!-- Step 1: Foundation & Vision -->
+                <div id="step-1" class="step-content active">
+                    <div class="step-header">
+                        <h2>Step 1: Foundation & Vision</h2>
+                        <p class="step-description">This is the anchor for everything else. If you skip it, your story risks losing focus.</p>
+                    </div>
+
+                    <div class="step-sections">
+                        <div class="section">
+                            <h3>Clarify Your "Why"</h3>
+                            <p>Readers can feel when a book has heart. Ask yourself:</p>
+                            
+                            <div class="input-group">
+                                <label>What do I want readers to feel at the end?</label>
+                                <textarea id="reader-feeling" placeholder="Hopeful? Shattered? Empowered? Describe the emotional impact..." rows="3"></textarea>
                             </div>
-                            <div class="step" id="step-visuals">
-                                <div class="step-icon">🎨</div>
-                                <div class="step-text">Character & Scenes</div>
+
+                            <div class="input-group">
+                                <label>What conversation do I want my book to spark?</label>
+                                <textarea id="book-conversation" placeholder="What themes or discussions should this book inspire?" rows="3"></textarea>
+                            </div>
+
+                            <div class="input-group">
+                                <label>Why me? Why am I the person to tell this story?</label>
+                                <textarea id="personal-connection" placeholder="What makes you uniquely qualified to tell this story?" rows="3"></textarea>
                             </div>
                         </div>
+
+                        <div class="section">
+                            <h3>Genre + Promise to the Reader</h3>
+                            <div class="input-group">
+                                <label>Genre</label>
+                                <select id="genre">
+                                    <option value="">Select your primary genre</option>
+                                    <option value="thriller">Thriller</option>
+                                    <option value="romance">Romance</option>
+                                    <option value="fantasy">Fantasy</option>
+                                    <option value="sci-fi">Science Fiction</option>
+                                    <option value="mystery">Mystery</option>
+                                    <option value="literary">Literary Fiction</option>
+                                    <option value="historical">Historical Fiction</option>
+                                    <option value="contemporary">Contemporary Fiction</option>
+                                    <option value="ya">Young Adult</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+
+                            <div class="input-group">
+                                <label>What promise does your genre make to readers?</label>
+                                <textarea id="genre-promise" placeholder="A thriller promises tension and resolution; romance promises emotional payoff..." rows="2"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="section">
+                            <h3>Theme (The Hidden Thread)</h3>
+                            <div class="input-group">
+                                <label>What universal theme will your story wrestle with?</label>
+                                <textarea id="theme" placeholder="Identity, loss, love, power, freedom, belonging..." rows="2"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="section">
+                            <h3>Vision Board</h3>
+                            <div class="input-group">
+                                <label>Describe the mood and feeling of your story</label>
+                                <textarea id="vision-board" placeholder="List images, songs, quotes, films, colors, or atmospheres that feel like your story..." rows="4"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="step-actions">
+                        <button class="next-step" data-next="2">Next: Discovery & Brainstorming →</button>
                     </div>
                 </div>
 
-                <!-- Story Display -->
-                <div id="story-display" class="story-display hidden">
-                    <div class="story-header">
-                        <h1 id="story-title">Your Story</h1>
-                        <button id="restart-btn" class="restart-btn">Create New Story</button>
+                <!-- Step 2: Brainstorming & Discovery -->
+                <div id="step-2" class="step-content">
+                    <div class="step-header">
+                        <h2>Step 2: Brainstorming & Discovery</h2>
+                        <p class="step-description">This is where raw material piles up so you can sift for gold.</p>
                     </div>
-                    
-                    
-                    <div id="characters-section" class="characters-section">
-                        <h3>Characters</h3>
-                        <div id="characters-grid" class="characters-grid"></div>
+
+                    <div class="step-sections">
+                        <div class="section">
+                            <h3>Dump It All</h3>
+                            <div class="input-group">
+                                <label>Write down everything - snippets, scenes, questions</label>
+                                <textarea id="brain-dump" placeholder="Dialogue fragments, scene ideas, 'what if' scenarios - don't filter, just dump!" rows="6"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="section">
+                            <h3>The "What If" Test</h3>
+                            <div class="input-group">
+                                <label>Your central "what if" question</label>
+                                <input type="text" id="what-if" placeholder="What if dinosaurs could be cloned back to life?">
+                            </div>
+
+                            <div class="input-group">
+                                <label>3 different outcomes for your "what if"</label>
+                                <textarea id="what-if-outcomes" placeholder="Explore at least 3 different ways your 'what if' could unfold..." rows="4"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="section">
+                            <h3>Premise Statement</h3>
+                            <div class="input-group">
+                                <label>Condense your idea into 1-2 sentences (your North Star)</label>
+                                <textarea id="premise" placeholder="Example: A grieving scientist discovers a way to speak with the dead — but each conversation shortens her own life." rows="3"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="section">
+                            <h3>AI-Powered Brainstorming</h3>
+                            <button id="generate-ideas" class="generate-btn">🧠 Generate Story Ideas</button>
+                            <div id="generated-ideas" class="generated-content"></div>
+                        </div>
                     </div>
-                    
-                    <div id="chapters-section" class="chapters-section">
-                        <h3>Story Chapters</h3>
-                        <div id="chapters-container" class="chapters-container"></div>
+
+                    <div class="step-actions">
+                        <button class="prev-step" data-prev="1">← Foundation</button>
+                        <button class="next-step" data-next="3">Next: Characters →</button>
                     </div>
-                    
-                    <div class="story-footer">
-                        <p>✨ Powered by Gemini Nano Banana</p>
+                </div>
+
+                <!-- Step 3: Characters That Hook -->
+                <div id="step-3" class="step-content">
+                    <div class="step-header">
+                        <h2>Step 3: Characters That Hook</h2>
+                        <p class="step-description">Readers don't fall in love with plots, they fall in love with people.</p>
+                    </div>
+
+                    <div class="step-sections">
+                        <div class="section">
+                            <h3>Main Character</h3>
+                            <div class="character-designer">
+                                <div class="input-group">
+                                    <label>Character Name</label>
+                                    <input type="text" id="main-character-name" placeholder="Your protagonist's name">
+                                </div>
+
+                                <div class="triad-design">
+                                    <h4>The Character Triad</h4>
+                                    <div class="input-group">
+                                        <label>Goal (What do they want?)</label>
+                                        <textarea id="character-goal" placeholder="External: win the championship; Internal: feel worthy" rows="2"></textarea>
+                                    </div>
+                                    <div class="input-group">
+                                        <label>Obstacle (What stands in the way?)</label>
+                                        <textarea id="character-obstacle" placeholder="Rival, trauma, social system..." rows="2"></textarea>
+                                    </div>
+                                    <div class="input-group">
+                                        <label>Flaw (What self-sabotaging trait trips them up?)</label>
+                                        <textarea id="character-flaw" placeholder="Fear of rejection, pride, perfectionism..." rows="2"></textarea>
+                                    </div>
+                                </div>
+
+                                <div class="input-group">
+                                    <label>Backstory Iceberg (3 pivotal events)</label>
+                                    <textarea id="character-backstory" placeholder="What key childhood/past events shaped this character?" rows="3"></textarea>
+                                </div>
+
+                                <div class="input-group">
+                                    <label>Relatable Vulnerability</label>
+                                    <textarea id="character-vulnerability" placeholder="What makes readers empathize? Fear of rejection, longing to be loved, guilt..." rows="2"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="section">
+                            <h3>Supporting Characters</h3>
+                            <div id="supporting-characters">
+                                <button id="add-character" class="add-btn">+ Add Supporting Character</button>
+                            </div>
+                        </div>
+
+                        <div class="section">
+                            <h3>AI Character Development</h3>
+                            <button id="develop-characters" class="generate-btn">🎭 Develop My Characters</button>
+                            <div id="character-development" class="generated-content"></div>
+                        </div>
+                    </div>
+
+                    <div class="step-actions">
+                        <button class="prev-step" data-prev="2">← Discovery</button>
+                        <button class="next-step" data-next="4">Next: World-Building →</button>
+                    </div>
+                </div>
+
+                <!-- Step 4: World-Building & Setting -->
+                <div id="step-4" class="step-content">
+                    <div class="step-header">
+                        <h2>Step 4: World-Building & Setting</h2>
+                        <p class="step-description">Even in contemporary fiction, the world acts like another character.</p>
+                    </div>
+
+                    <div class="step-sections">
+                        <div class="section">
+                            <h3>The Rules of Reality</h3>
+                            <div class="input-group">
+                                <label>Define your world's rules</label>
+                                <textarea id="world-rules" placeholder="Fantasy/sci-fi: magic systems, technology, politics. Realistic: social expectations, family dynamics, cultural backdrops..." rows="4"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="section">
+                            <h3>Sensory World-Building</h3>
+                            <div class="sensory-grid">
+                                <div class="input-group">
+                                    <label>What does this place smell like?</label>
+                                    <input type="text" id="world-smell" placeholder="Salt air, antiseptic, smoke...">
+                                </div>
+                                <div class="input-group">
+                                    <label>What sounds define it?</label>
+                                    <input type="text" id="world-sounds" placeholder="Buzzing neon, cicadas, gunfire...">
+                                </div>
+                                <div class="input-group">
+                                    <label>Key textures characters notice</label>
+                                    <input type="text" id="world-textures" placeholder="Rough brick, soft hair, sticky blood...">
+                                </div>
+                                <div class="input-group">
+                                    <label>Distinctive visual details</label>
+                                    <input type="text" id="world-visuals" placeholder="Chalkboard that always misspells 'cappuccino'...">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="section">
+                            <h3>Symbolic Setting</h3>
+                            <div class="input-group">
+                                <label>How does your environment mirror emotions?</label>
+                                <textarea id="symbolic-setting" placeholder="A crumbling house reflects a broken marriage. A sunrise signals new beginnings..." rows="3"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="section">
+                            <h3>AI World-Building</h3>
+                            <button id="build-world" class="generate-btn">🌍 Enhance My World</button>
+                            <div id="world-building" class="generated-content"></div>
+                        </div>
+                    </div>
+
+                    <div class="step-actions">
+                        <button class="prev-step" data-prev="3">← Characters</button>
+                        <button class="next-step" data-next="5">Next: Plot & Structure →</button>
+                    </div>
+                </div>
+
+                <!-- Step 5: Plot & Structure -->
+                <div id="step-5" class="step-content">
+                    <div class="step-header">
+                        <h2>Step 5: Plot & Structure</h2>
+                        <p class="step-description">This is where you turn scattered brilliance into a journey.</p>
+                    </div>
+
+                    <div class="step-sections">
+                        <div class="section">
+                            <h3>Choose Your Framework</h3>
+                            <div class="framework-selector">
+                                <div class="framework-option" data-framework="three-act">
+                                    <h4>Three-Act Structure</h4>
+                                    <p>Setup → Confrontation → Resolution</p>
+                                </div>
+                                <div class="framework-option" data-framework="hero-journey">
+                                    <h4>Hero's Journey</h4>
+                                    <p>Call to Adventure, Trials, Transformation, Return</p>
+                                </div>
+                                <div class="framework-option" data-framework="save-cat">
+                                    <h4>Save the Cat!</h4>
+                                    <p>15 beats popular in commercial fiction</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="section">
+                            <h3>Key Plot Points</h3>
+                            <div class="plot-points">
+                                <div class="input-group">
+                                    <label>Hook (First 10 pages disruption)</label>
+                                    <textarea id="hook" placeholder="What disrupts normal life early in the story?" rows="2"></textarea>
+                                </div>
+                                <div class="input-group">
+                                    <label>Turning Point 1</label>
+                                    <textarea id="turning-point-1" placeholder="First major 'oh no!' moment" rows="2"></textarea>
+                                </div>
+                                <div class="input-group">
+                                    <label>Turning Point 2</label>
+                                    <textarea id="turning-point-2" placeholder="Second pivot in the story" rows="2"></textarea>
+                                </div>
+                                <div class="input-group">
+                                    <label>Turning Point 3</label>
+                                    <textarea id="turning-point-3" placeholder="Third major shift" rows="2"></textarea>
+                                </div>
+                                <div class="input-group">
+                                    <label>Climax</label>
+                                    <textarea id="climax" placeholder="The biggest choice that tests your protagonist's core flaw" rows="2"></textarea>
+                                </div>
+                                <div class="input-group">
+                                    <label>Resolution</label>
+                                    <textarea id="resolution" placeholder="Emotional closure consistent with your theme" rows="2"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="section">
+                            <h3>AI Plot Development</h3>
+                            <button id="develop-plot" class="generate-btn">📖 Develop My Plot</button>
+                            <div id="plot-development" class="generated-content"></div>
+                        </div>
+
+                        <div class="section">
+                            <h3>🏆 Master Story Overview</h3>
+                            <p><strong>This is where it all comes together!</strong> Generate your comprehensive story development bible - a complete roadmap from concept to finished manuscript that ties together all 5 steps into a cohesive, publishable story.</p>
+                            
+                            <div class="tip">
+                                <strong>💡 Pro Tip:</strong> This overview will synthesize everything from your Foundation through Plot Structure, creating your ultimate writing companion that prevents writer's block and keeps your story focused.
+                            </div>
+                            
+                            <button id="generate-overview" class="generate-btn primary">🎯 Generate Ultimate Story Guide</button>
+                            <div id="story-overview" class="generated-content"></div>
+                        </div>
+                    </div>
+
+                    <div class="step-actions">
+                        <button class="prev-step" data-prev="4">← World-Building</button>
+                        <button id="save-story" class="save-btn">💾 Save My Story</button>
                     </div>
                 </div>
             </div>

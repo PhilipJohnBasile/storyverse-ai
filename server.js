@@ -12,7 +12,8 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.static('public'));
 
 // Routes
-app.use('/api/story', require('./routes/story'));
+app.use('/api/story', require('./routes/story')); // Keep old routes for compatibility
+app.use('/api/storyverse', require('./routes/storyverse')); // New StoryVerse routes
 
 // Serve frontend
 app.get('*', (req, res) => {
@@ -20,6 +21,7 @@ app.get('*', (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`🚀 StoryVerse AI running on http://localhost:${PORT}`);
+  console.log(`🚀 StoryVerse running on http://localhost:${PORT}`);
+  console.log(`📚 Master Your Story in 5 Essential Steps`);
   console.log(`📝 Make sure to create .env file with your API keys`);
 });

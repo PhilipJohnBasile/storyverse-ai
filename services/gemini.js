@@ -12,36 +12,47 @@ class GeminiService {
   async generateStoryOutline(prompt) {
     try {
       const storyPrompt = `
-        Create a compelling 5-chapter story outline based on: "${prompt}"
+        Create a detailed book development guide based on: "${prompt}"
         
         Requirements:
-        - Each chapter should have a clear scene description
-        - Include as many characters as needed for a rich story (2-6 main characters recommended)
-        - Story should have emotional highs and lows
-        - End with a satisfying conclusion
+        - Focus on character development for authors writing a novel
+        - Include detailed character profiles (2-6 main characters recommended)
+        - Generate 5 key pivotal scenes that define the story arc
+        - Each scene should represent major plot points, character development moments, or emotional climaxes
+        - Scenes should be suitable for visual illustration to help authors visualize their book
         
         Format as JSON:
         {
-          "title": "Story Title",
+          "title": "Book Title",
+          "genre": "Primary genre of the book",
+          "target_audience": "Target readership (e.g., Adult Contemporary, YA Fantasy, etc.)",
           "characters": [
             {
               "name": "Character Name",
-              "age": "Age if relevant",
-              "physical_description": "Specific visual details: height, build, hair color/style, eye color, distinctive features, clothing style",
-              "core_motivation": "What drives them? What do they want?",
-              "internal_conflict": "What holds them back? What do they struggle with?",
-              "relationship_role": "How they relate to other characters",
-              "character_arc_hint": "How they might change throughout the story",
-              "voice_style": "Speaking style and personality traits",
-              "visual_consistency_notes": "Key visual elements that must stay consistent across scenes"
+              "role": "Protagonist/Antagonist/Supporting Character",
+              "age": "Age and life stage",
+              "occupation": "What they do for work/their role in society",
+              "physical_description": "Detailed visual appearance: height, build, hair color/style, eye color, facial features, distinctive marks, typical clothing style, posture, mannerisms",
+              "personality_traits": "Key personality characteristics that define them",
+              "core_motivation": "Their primary driving goal throughout the book",
+              "internal_conflict": "Their main internal struggle or character flaw",
+              "backstory_summary": "Brief but crucial background that shapes who they are",
+              "character_arc": "How they change from beginning to end of the book",
+              "relationships": "Key relationships with other characters",
+              "dialogue_voice": "How they speak - formal, casual, accent, speech patterns",
+              "visual_consistency_notes": "Key visual elements that must stay consistent across all illustrations"
             }
           ],
           "chapters": [
             {
-              "title": "Chapter Title",
-              "scene_description": "Detailed scene for image generation",
-              "narrative_text": "Story text for this chapter",
-              "characters_present": ["character names in this scene"]
+              "title": "Scene Title",
+              "scene_type": "Type of scene (Opening, Inciting Incident, Midpoint, Climax, Resolution)",
+              "location": "Where this pivotal scene takes place",
+              "scene_description": "Detailed visual description for illustration - setting, lighting, mood, character positions and expressions",
+              "narrative_purpose": "Why this scene is crucial to the story - what it reveals or advances",
+              "emotional_tone": "The emotional weight and atmosphere of this scene",
+              "characters_present": ["character names in this scene"],
+              "key_story_moment": "What major plot point or character development happens here"
             }
           ]
         }
@@ -174,6 +185,41 @@ class GeminiService {
         console.log(`💡 Consider upgrading to paid tier for higher quotas.`);
       }
       return null;
+    }
+  }
+
+  async generateWritingGuidance(prompt) {
+    try {
+      const response = await this.textModel.generateContent(prompt);
+      
+      // Extract text from response
+      const text = response.response.text();
+      
+      // Convert markdown-style formatting to HTML if needed
+      let htmlContent = text
+        .replace(/## (.*?)$/gm, '<h3>$1</h3>')
+        .replace(/# (.*?)$/gm, '<h2>$1</h2>')
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\*(.*?)\*/g, '<em>$1</em>')
+        .replace(/- (.*?)$/gm, '<li>$1</li>')
+        .replace(/\n\n/g, '</p><p>')
+        .replace(/^/, '<p>')
+        .replace(/$/, '</p>')
+        .replace(/<li>/g, '<ul><li>')
+        .replace(/<\/li>/g, '</li></ul>');
+
+      // Clean up HTML formatting
+      htmlContent = htmlContent
+        .replace(/<\/ul><ul>/g, '')
+        .replace(/<p><h/g, '<h')
+        .replace(/<\/h([0-9])><\/p>/g, '</h$1>')
+        .replace(/<p><\/p>/g, '');
+
+      return htmlContent;
+      
+    } catch (error) {
+      console.error('Writing guidance generation error:', error);
+      throw new Error('AI writing guidance is currently unavailable. Please try again later.');
     }
   }
 }
