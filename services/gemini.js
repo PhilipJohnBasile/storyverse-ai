@@ -16,7 +16,7 @@ class GeminiService {
         
         Requirements:
         - Each chapter should have a clear scene description
-        - Include 2-3 main characters with detailed visual descriptions
+        - Include as many characters as needed for a rich story (2-6 main characters recommended)
         - Story should have emotional highs and lows
         - End with a satisfying conclusion
         
@@ -26,8 +26,14 @@ class GeminiService {
           "characters": [
             {
               "name": "Character Name",
-              "description": "Detailed visual description for consistent generation",
-              "voice_style": "Brief description of speaking style"
+              "age": "Age if relevant",
+              "physical_description": "Specific visual details: height, build, hair color/style, eye color, distinctive features, clothing style",
+              "core_motivation": "What drives them? What do they want?",
+              "internal_conflict": "What holds them back? What do they struggle with?",
+              "relationship_role": "How they relate to other characters",
+              "character_arc_hint": "How they might change throughout the story",
+              "voice_style": "Speaking style and personality traits",
+              "visual_consistency_notes": "Key visual elements that must stay consistent across scenes"
             }
           ],
           "chapters": [
@@ -48,20 +54,8 @@ class GeminiService {
       const jsonMatch = text.match(/\{[\s\S]*\}/);
       return JSON.parse(jsonMatch[0]);
     } catch (error) {
-      console.log('🎭 Gemini API unavailable, using demo story...');
-      
-      // Fallback to demo data when API is unavailable
-      const demoData = require('../demo-data.json');
-      
-      // Simple prompt matching for demo
-      if (prompt.toLowerCase().includes('detective') || prompt.toLowerCase().includes('cat')) {
-        return demoData.detective_cat;
-      } else if (prompt.toLowerCase().includes('dragon')) {
-        return demoData.dragon_story;
-      } else {
-        // Default to detective cat story
-        return demoData.detective_cat;
-      }
+      console.error('Story generation error:', error);
+      throw new Error('Gemini API is currently unavailable. Please try again later.');
     }
   }
 
@@ -78,18 +72,26 @@ class GeminiService {
         .filter(char => char !== undefined);
 
       const characterDescriptions = relevantCharacters
-        .map(c => `${c.name}: ${c.description}`)
-        .join('. ');
+        .map(c => `${c.name}: ${c.physical_description || c.description}${c.visual_consistency_notes ? ` | Consistency: ${c.visual_consistency_notes}` : ''}`)
+        .join('\n');
 
       const imagePrompt = [
         {
-          text: `Create a photorealistic image for this story chapter:
+          text: `Create a cinematic scene for this story chapter:
           
-          Scene: ${chapter.scene_description}
-          Characters in scene: ${characterDescriptions}
+          SCENE: ${chapter.scene_description}
           
-          Style: Cinematic, highly detailed, consistent character appearance
-          ${previousImage ? 'Maintain character consistency with the previous image.' : ''}
+          CHARACTERS IN SCENE:
+          ${characterDescriptions}
+          
+          VISUAL CONSISTENCY REQUIREMENTS:
+          - Maintain exact character appearance as described above
+          - Use photorealistic, cinematic style
+          - Consistent lighting and composition
+          - High detail and professional quality
+          ${previousImage ? '- Maintain character consistency with the previous image reference' : ''}
+          
+          STYLE: Cinematic photography, dramatic lighting, storytelling composition
           `
         }
       ];
@@ -133,11 +135,22 @@ class GeminiService {
 
   async generateCharacterReference(character) {
     try {
-      const prompt = `Create a character reference sheet showing ${character.name}: ${character.description}
+      const prompt = `Create a detailed character reference sheet for ${character.name}:
+
+      PHYSICAL DETAILS: ${character.physical_description || character.description}
+      VISUAL CONSISTENCY NOTES: ${character.visual_consistency_notes || 'Maintain consistent appearance across all scenes'}
       
-      Style: Clean character design, multiple angles (front, side, back), consistent appearance, high detail
-      Background: Simple white background
-      Layout: Character study/reference sheet format`;
+      CHARACTER REFERENCE REQUIREMENTS:
+      - Multiple angles: front view, side profile, back view
+      - Full body and close-up face shots
+      - Show distinctive clothing/accessories
+      - Consistent lighting and style
+      - Professional character design sheet layout
+      - Clean white/neutral background
+      - High detail and clarity for reference use
+      
+      STYLE: Photorealistic character study, consistent art style, reference sheet format
+      PURPOSE: This will be used as visual reference for maintaining character consistency in story scenes`;
 
       const response = await this.imageModel.generateContent(prompt);
 

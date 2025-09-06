@@ -184,7 +184,7 @@ body {
 
 .progress-steps {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(2, 1fr);
     gap: 1rem;
     margin-top: 2rem;
 }
@@ -317,9 +317,33 @@ body {
     color: #333;
 }
 
+.character-age {
+    font-size: 0.8rem;
+    color: #888;
+    font-style: italic;
+    margin-bottom: 0.5rem;
+}
+
 .character-description {
     font-size: 0.9rem;
     color: #666;
+    margin-bottom: 0.5rem;
+}
+
+.character-motivation,
+.character-conflict {
+    font-size: 0.8rem;
+    color: #555;
+    margin-bottom: 0.3rem;
+    padding: 0.3rem;
+    background: #f8f9fa;
+    border-left: 3px solid #667eea;
+    border-radius: 3px;
+}
+
+.character-motivation strong,
+.character-conflict strong {
+    color: #333;
 }
 
 .missing-image {

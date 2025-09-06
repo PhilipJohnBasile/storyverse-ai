@@ -25,8 +25,6 @@ class StoryVerseApp {
             
             storyTitle: document.getElementById('story-title'),
             restartBtn: document.getElementById('restart-btn'),
-            playIntroBtn: document.getElementById('play-intro'),
-            autoPlayBtn: document.getElementById('auto-play'),
             
             charactersGrid: document.getElementById('characters-grid'),
             chaptersContainer: document.getElementById('chapters-container')
@@ -36,8 +34,6 @@ class StoryVerseApp {
     bindEvents() {
         this.elements.generateBtn.addEventListener('click', () => this.generateStory());
         this.elements.restartBtn.addEventListener('click', () => this.restart());
-        this.elements.playIntroBtn.addEventListener('click', () => this.playIntroduction());
-        this.elements.autoPlayBtn.addEventListener('click', () => this.autoPlayStory());
         
         this.elements.exampleBtns.forEach(btn => {
             btn.addEventListener('click', (e) => {
@@ -83,13 +79,7 @@ class StoryVerseApp {
             this.startProgressPolling();
             await this.generateVisuals();
             
-            // Step 3: Generate audio
-            await this.generateAudio();
-            
-            // Step 4: Generate transitions (optional)
-            await this.generateTransitions();
-            
-            // Complete
+            // Complete - story ready!
             await this.loadCompleteStory();
             this.showStoryDisplay();
 
@@ -113,34 +103,7 @@ class StoryVerseApp {
         }
     }
 
-    async generateAudio() {
-        this.updateProgress(70, 'Generating AI narration...', 'step-audio');
-        
-        const response = await fetch(`/api/story/generate-audio/${this.currentStoryId}`, {
-            method: 'POST'
-        });
-        
-        if (!response.ok) {
-            const error = await response.json();
-            throw new Error(error.error);
-        }
-    }
-
-    async generateTransitions() {
-        this.updateProgress(90, 'Creating video magic...', 'step-transitions');
-        
-        try {
-            const response = await fetch(`/api/story/generate-transitions/${this.currentStoryId}`, {
-                method: 'POST'
-            });
-            
-            if (!response.ok) {
-                console.warn('Transitions failed, continuing without them');
-            }
-        } catch (error) {
-            console.warn('Transitions failed:', error);
-        }
-    }
+    // Audio and video generation removed for streamlined experience
 
     async loadCompleteStory() {
         const response = await fetch(`/api/story/complete/${this.currentStoryId}`);
@@ -149,7 +112,7 @@ class StoryVerseApp {
         if (!response.ok) throw new Error(storyData.error);
         
         this.currentStoryData = storyData;
-        this.updateProgress(100, 'Story complete!', 'step-transitions');
+        this.updateProgress(100, 'Story complete!', 'step-visuals');
     }
 
     startProgressPolling() {
@@ -243,7 +206,10 @@ class StoryVerseApp {
             characterCard.innerHTML = `
                 ${imageToUse ? `<img src="/api/story/files/${imageToUse.split('/').pop()}" alt="${character.name}">` : '<div class="missing-image">👤 Character art coming soon...</div>'}
                 <div class="character-name">${character.name}</div>
-                <div class="character-description">${character.description}</div>
+                ${character.age ? `<div class="character-age">Age: ${character.age}</div>` : ''}
+                <div class="character-description">${character.physical_description || character.description}</div>
+                ${character.core_motivation ? `<div class="character-motivation"><strong>Motivation:</strong> ${character.core_motivation}</div>` : ''}
+                ${character.internal_conflict ? `<div class="character-conflict"><strong>Conflict:</strong> ${character.internal_conflict}</div>` : ''}
             `;
             
             this.elements.charactersGrid.appendChild(characterCard);
@@ -271,7 +237,6 @@ class StoryVerseApp {
                     ${imageToUse ? `<img class="chapter-image" src="/api/story/files/${imageToUse.split('/').pop()}" alt="${chapter.title}">` : '<div class="missing-image">📷 Image generation in progress...</div>'}
                     <div class="chapter-text">${chapter.narrative_text}</div>
                     <div class="chapter-controls">
-                        ${audioPath ? `<button class="chapter-btn" onclick="app.playChapterAudio(${index})">🔊 Play Narration</button>` : ''}
                         <button class="chapter-btn" onclick="app.showChapterDetails(${index})">📖 Scene Details</button>
                     </div>
                 </div>
@@ -282,82 +247,20 @@ class StoryVerseApp {
     }
 
     async playIntroduction() {
-        this.stopAllAudio();
-        
-        if (this.currentStoryData?.intro_audio) {
-            try {
-                const audio = new Audio(`/api/story/files/${this.currentStoryData.intro_audio.split('/').pop()}`);
-                this.audioElements.push(audio);
-                await audio.play();
-                return;
-            } catch (error) {
-                console.warn('Audio file failed, using fallback TTS:', error);
-            }
-        }
-        
-        // Fallback to browser text-to-speech
-        const introText = `Welcome to ${this.currentStoryData.title}. Let me tell you an incredible story that will take you on an unforgettable journey.`;
-        this.speakText(introText);
+        // Audio disabled - just show a message
+        console.log('Audio narration disabled');
+        alert('Audio narration has been disabled for better user experience.');
     }
 
     async playChapterAudio(chapterIndex) {
-        this.stopAllAudio();
-        
-        const audioPath = this.currentStoryData.narration_audio?.[chapterIndex];
-        if (audioPath) {
-            try {
-                const audio = new Audio(`/api/story/files/${audioPath.split('/').pop()}`);
-                this.audioElements.push(audio);
-                await audio.play();
-                return;
-            } catch (error) {
-                console.warn('Audio file failed, using fallback TTS:', error);
-            }
-        }
-        
-        // Fallback to browser text-to-speech
-        const chapter = this.currentStoryData.chapters[chapterIndex];
-        if (chapter?.narrative_text) {
-            this.speakText(chapter.narrative_text);
-        }
+        // Audio disabled - just show a message
+        console.log('Chapter audio narration disabled');
+        alert('Audio narration has been disabled for better user experience.');
     }
 
     async autoPlayStory() {
-        this.elements.autoPlayBtn.disabled = true;
-        this.elements.autoPlayBtn.textContent = '⏸️ Playing...';
-        
-        try {
-            // Play introduction
-            await this.playIntroduction();
-            await this.sleep(1000); // Pause between sections
-            
-            // Play each chapter
-            for (let i = 0; i < this.currentStoryData.chapters.length; i++) {
-                await this.playChapterAudio(i);
-                await this.sleep(1500); // Pause between chapters
-            }
-            
-            // Play outro
-            if (this.currentStoryData.outro_audio) {
-                try {
-                    const audio = new Audio(`/api/story/files/${this.currentStoryData.outro_audio.split('/').pop()}`);
-                    this.audioElements.push(audio);
-                    await audio.play();
-                } catch (error) {
-                    // Fallback outro
-                    const outroText = `And so ends our tale of ${this.currentStoryData.title}. Thank you for joining us on this incredible journey.`;
-                    await this.speakText(outroText);
-                }
-            } else {
-                // Fallback outro
-                const outroText = `And so ends our tale of ${this.currentStoryData.title}. Thank you for joining us on this incredible journey.`;
-                await this.speakText(outroText);
-            }
-            
-        } finally {
-            this.elements.autoPlayBtn.disabled = false;
-            this.elements.autoPlayBtn.textContent = '▶️ Auto-Play Story';
-        }
+        // Audio disabled - just show a message
+        alert('Auto-play narration has been disabled for better user experience. Please enjoy reading the story!');
     }
 
     showChapterDetails(chapterIndex) {
