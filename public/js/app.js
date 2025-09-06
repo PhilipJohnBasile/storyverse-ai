@@ -153,20 +153,31 @@ class StoryVerseApp {
     }
 
     startProgressPolling() {
+        let pollCount = 0;
+        const maxPolls = 30; // Max 60 seconds of polling
+        
         this.progressInterval = setInterval(async () => {
             try {
+                pollCount++;
+                if (pollCount > maxPolls) {
+                    console.warn('Polling timeout reached');
+                    clearInterval(this.progressInterval);
+                    return;
+                }
+                
                 const response = await fetch(`/api/story/status/${this.currentStoryId}`);
                 const status = await response.json();
                 
                 if (response.ok && status.progress > 0) {
                     this.updateProgressBar(status.progress);
                     
-                    if (status.progress >= 100) {
+                    if (status.progress >= 100 || status.status === 'complete') {
                         clearInterval(this.progressInterval);
                     }
                 }
             } catch (error) {
                 console.warn('Progress polling error:', error);
+                clearInterval(this.progressInterval);
             }
         }, 2000);
     }
@@ -227,8 +238,10 @@ class StoryVerseApp {
             
             const imagePath = this.currentStoryData.character_images?.[character.name];
             
+            const imageToUse = imagePath;
+            
             characterCard.innerHTML = `
-                ${imagePath ? `<img src="/api/story/files/${imagePath.split('/').pop()}" alt="${character.name}">` : ''}
+                ${imageToUse ? `<img src="/api/story/files/${imageToUse.split('/').pop()}" alt="${character.name}">` : '<div class="missing-image">👤 Character art coming soon...</div>'}
                 <div class="character-name">${character.name}</div>
                 <div class="character-description">${character.description}</div>
             `;
@@ -247,13 +260,15 @@ class StoryVerseApp {
             const imagePath = this.currentStoryData.chapter_images?.[index];
             const audioPath = this.currentStoryData.narration_audio?.[index];
             
+            const imageToUse = imagePath;
+            
             chapterElement.innerHTML = `
                 <div class="chapter-header">
                     <div class="chapter-title">${chapter.title}</div>
                     <div class="chapter-number">Chapter ${index + 1}</div>
                 </div>
                 <div class="chapter-content">
-                    ${imagePath ? `<img class="chapter-image" src="/api/story/files/${imagePath.split('/').pop()}" alt="${chapter.title}">` : ''}
+                    ${imageToUse ? `<img class="chapter-image" src="/api/story/files/${imageToUse.split('/').pop()}" alt="${chapter.title}">` : '<div class="missing-image">📷 Image generation in progress...</div>'}
                     <div class="chapter-text">${chapter.narrative_text}</div>
                     <div class="chapter-controls">
                         ${audioPath ? `<button class="chapter-btn" onclick="app.playChapterAudio(${index})">🔊 Play Narration</button>` : ''}

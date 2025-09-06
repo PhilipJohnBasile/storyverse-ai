@@ -73,9 +73,9 @@ class GeminiService {
   async generateChapterImage(storyData, chapterIndex, previousImage = null) {
     try {
       const chapter = storyData.chapters[chapterIndex];
-      const relevantCharacters = chapter.characters_present.map(name => 
-        storyData.characters.find(c => c.name === name)
-      );
+      const relevantCharacters = chapter.characters_present
+        .map(name => storyData.characters.find(c => c.name === name))
+        .filter(char => char !== undefined);
 
       const characterDescriptions = relevantCharacters
         .map(c => `${c.name}: ${c.description}`)

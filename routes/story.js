@@ -169,13 +169,50 @@ router.post('/generate-transitions/:storyId', async (req, res) => {
     console.log('🎬 Generating video transitions...');
     const transitionVideos = [];
 
+    // Skip video generation if no images were created
+    if (!story.chapter_images || story.chapter_images.every(img => !img)) {
+      console.log('⚠️ No chapter images available, skipping video transitions');
+      story.transition_videos = [];
+      story.status = 'complete';
+      story.progress = 100;
+      storyCache.set(storyId, story);
+      
+      return res.json({
+        status: 'complete',
+        transition_videos: []
+      });
+    }
+
+    // Generate transitions with timeout
+    const MAX_TRANSITION_TIME = 30000; // 30 seconds per video
+    
     for (let i = 0; i < story.chapter_images.length - 1; i++) {
-      const videoPath = await fal.createVideoTransition(
-        story.chapter_images[i],
-        story.chapter_images[i + 1],
-        i
-      );
-      transitionVideos.push(videoPath);
+      if (!story.chapter_images[i] || !story.chapter_images[i + 1]) {
+        console.log(`⚠️ Skipping transition ${i}: missing images`);
+        transitionVideos.push(null);
+        continue;
+      }
+
+      try {
+        const videoPromise = fal.createVideoTransition(
+          story.chapter_images[i],
+          story.chapter_images[i + 1],
+          i
+        );
+        
+        // Add timeout to prevent hanging
+        const timeoutPromise = new Promise((_, reject) => 
+          setTimeout(() => reject(new Error('Video generation timeout')), MAX_TRANSITION_TIME)
+        );
+        
+        const videoPath = await Promise.race([videoPromise, timeoutPromise]);
+        transitionVideos.push(videoPath);
+        console.log(`✅ Generated transition video ${i + 1}`);
+        
+      } catch (error) {
+        console.log(`❌ Failed to generate transition ${i}: ${error.message}`);
+        transitionVideos.push(null);
+      }
     }
 
     story.transition_videos = transitionVideos;

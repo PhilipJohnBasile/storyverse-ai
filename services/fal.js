@@ -11,6 +11,12 @@ class FalService {
 
   async createVideoTransition(fromImagePath, toImagePath, chapterIndex) {
     try {
+      // Skip if either image path is null or doesn't exist
+      if (!fromImagePath || !fs.existsSync(fromImagePath)) {
+        console.log(`⚠️ Skipping video transition ${chapterIndex}: missing source image`);
+        return null;
+      }
+
       // Convert images to base64 for fal.ai
       const fromImageData = fs.readFileSync(fromImagePath);
       const fromImageBase64 = `data:image/png;base64,${fromImageData.toString('base64')}`;
@@ -47,6 +53,12 @@ class FalService {
 
   async enhanceImage(imagePath, description) {
     try {
+      // Skip if image path is null or doesn't exist
+      if (!imagePath || !fs.existsSync(imagePath)) {
+        console.log(`⚠️ Skipping image enhancement: missing image file`);
+        return null;
+      }
+
       const imageData = fs.readFileSync(imagePath);
       const imageBase64 = `data:image/png;base64,${imageData.toString('base64')}`;
 
